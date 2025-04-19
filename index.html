@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Text Encryptor/Decryptor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f4f8;
+      color: #333;
+    }
+    textarea, input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .description {
+      font-size: 14px;
+      margin-bottom: 20px;
+      background: #e8f0fe;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Secure Text Encryptor/Decryptor</h2>
+    <div class="description">
+      This tool encrypts and decrypts your text using a simple XOR cipher combined with base64 encoding. You must provide a secret key, which is used to encode or decode your text securely. Note: This method is suitable for casual use, not for high-security needs.
+    </div>
+    <input type="text" id="secretKey" placeholder="Enter your secret key...">
+    <textarea id="inputText" placeholder="Enter text here..."></textarea>
+    <button onclick="encryptText()">Encrypt</button>
+    <button onclick="decryptText()">Decrypt</button>
+    <h3>Output:</h3>
+    <textarea id="outputText" readonly></textarea>
+  </div>
+
+  <script>
+    function xorEncrypt(text, key) {
+      let result = '';
+      for (let i = 0; i < text.length; i++) {
+        result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return result;
+    }
+
+    function encryptText() {
+      const text = document.getElementById('inputText').value;
+      const key = document.getElementById('secretKey').value;
+      if (!key) {
+        alert('Please enter a secret key.');
+        return;
+      }
+      const encrypted = btoa(xorEncrypt(text, key));
+      document.getElementById('outputText').value = encrypted;
+    }
+
+    function decryptText() {
+      const encrypted = document.getElementById('inputText').value;
+      const key = document.getElementById('secretKey').value;
+      if (!key) {
+        alert('Please enter a secret key.');
+        return;
+      }
+      try {
+        const decoded = atob(encrypted);
+        const decrypted = xorEncrypt(decoded, key);
+        document.getElementById('outputText').value = decrypted;
+      } catch (e) {
+        document.getElementById('outputText').value = 'Invalid encrypted text or wrong key.';
+      }
+    }
+  </script>
+</body>
+</html>
